@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Table(name = "lims_manifest")
-public class Manifest {
+public class LIMSManifest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -47,5 +47,5 @@ public class Manifest {
 
     @JoinColumn(name = "manifest_record_id")
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Sample> sampleInformation;
+    private List<LIMSSample> sampleInformation;
 }

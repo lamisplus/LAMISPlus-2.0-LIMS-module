@@ -29,7 +29,7 @@ import javax.persistence.*;
         @TypeDef(name = "jsonb-node", typeClass = JsonNodeBinaryType.class),
         @TypeDef(name = "json-node", typeClass = JsonNodeStringType.class),
 })
-public class Sample {
+public class LIMSSample {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)

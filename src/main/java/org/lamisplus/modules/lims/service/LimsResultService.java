@@ -3,8 +3,8 @@ package org.lamisplus.modules.lims.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.lims.domain.dto.ManifestDTO;
-import org.lamisplus.modules.lims.domain.entity.Result;
-import org.lamisplus.modules.lims.domain.entity.Test;
+import org.lamisplus.modules.lims.domain.entity.LIMSResult;
+import org.lamisplus.modules.lims.domain.entity.LIMSTest;
 import org.lamisplus.modules.lims.domain.mapper.LimsMapper;
 import org.lamisplus.modules.lims.repository.LimsManifestRepository;
 import org.lamisplus.modules.lims.repository.LimsResultRepository;
@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,29 +29,29 @@ public class LimsResultService {
     private final LimsTestRepository testRepository;
     private final LimsMapper limsMapper;
 
-    private Result Save(Result result){
+    private LIMSResult Save(LIMSResult result){
         result.setUuid(UUID.randomUUID().toString());
         LOG.info("1. RESULT: " + result);
         SaveResultInLabModule(result);
         return resultRepository.save(result);
     }
 
-    public List<Result> SaveAll(List<Result> results){
-        List<Result> savedResults = new ArrayList<>();
+    public List<LIMSResult> SaveAll(List<LIMSResult> results){
+        List<LIMSResult> savedResults = new ArrayList<>();
 
-        for(Result result:results){
-            Result savedResult = Save(result);
+        for(LIMSResult result:results){
+            LIMSResult savedResult = Save(result);
             savedResults.add(savedResult);
         }
 
         return  savedResults;
     }
 
-    public Result Update(Result result, int id){
+    public LIMSResult Update(LIMSResult result, int id){
         return resultRepository.save(result);
     }
 
-    public Result FindById(int id){
+    public LIMSResult FindById(int id){
         return resultRepository.findById(id).orElse(null);
     }
 
@@ -61,21 +62,19 @@ public class LimsResultService {
 
     public ManifestDTO FindResultsByManifestId(Integer id){
         ManifestDTO dto = limsMapper.toManifestDto(manifestRepository.findById(id).orElse(null));
-        List<Result> results = resultRepository.findAllByManifestRecordID(id);
+        List<LIMSResult> results = resultRepository.findAllByManifestRecordID(id);
         dto.setResults(results);
         return dto;
     }
 
-    public void SaveResultInLabModule(Result result){
+    public void SaveResultInLabModule(LIMSResult result){
         try {
-            Test test = testRepository.findBySampleId(Integer.valueOf(result.getSampleID())).get(0);
+            LIMSTest test = testRepository.findBySampleId(Integer.valueOf(result.getSampleID())).get(0);
             LOG.info("TEST: " + test);
 
             resultRepository.SaveSampleResult(UUID.randomUUID().toString(),
-                    LocalDate.parse(result.getAssayDate()),
-                    LocalTime.parse("00:00:00"),
-                    LocalDate.parse(result.getDateResultDispatched()),
-                    LocalTime.parse("00:00:00"),
+                    LocalDateTime.parse(result.getAssayDate()),
+                    LocalDateTime.parse(result.getDateResultDispatched()),
                     result.getTestResult(),
                     test.getId(),
                     test.getPatientUuid(),

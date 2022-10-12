@@ -1,35 +1,35 @@
 package org.lamisplus.modules.lims.domain.mapper;
 
 import org.lamisplus.modules.lims.domain.dto.*;
-import org.lamisplus.modules.lims.domain.entity.Config;
-import org.lamisplus.modules.lims.domain.entity.Manifest;
-import org.lamisplus.modules.lims.domain.entity.Result;
-import org.lamisplus.modules.lims.domain.entity.Sample;
+import org.lamisplus.modules.lims.domain.entity.LIMSConfig;
+import org.lamisplus.modules.lims.domain.entity.LIMSManifest;
+import org.lamisplus.modules.lims.domain.entity.LIMSResult;
+import org.lamisplus.modules.lims.domain.entity.LIMSSample;
 import org.mapstruct.Mapper;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface LimsMapper {
-    ManifestDTO toManifestDto(Manifest manifest);
-    SampleDTO tosSampleDto(Sample sample);
-    List<ManifestDTO> toManifestDtoList(List<Manifest> manifestList);
-    List<SampleDTO> toSampleDtoList(List<Sample> sampleList);
+    ManifestDTO toManifestDto(LIMSManifest manifest);
+    LABSampleDTO tosSampleDto(LIMSSample sample);
+    List<ManifestDTO> toManifestDtoList(List<LIMSManifest> manifestList);
+    List<LABSampleDTO> toSampleDtoList(List<LIMSSample> sampleList);
 
-    Manifest tomManifest(ManifestDTO manifestDTO);
-    Sample toSample(SampleDTO sampleDTO);
-    List<Manifest> tomManifestList(List<ManifestDTO> manifestDTOList);
-    List<Sample> toSampleList(List<SampleDTO> sampleDTOList);
+    LIMSManifest tomManifest(ManifestDTO manifestDTO);
+    LIMSSample toSample(LABSampleDTO sampleDTO);
+    List<LIMSManifest> tomManifestList(List<ManifestDTO> manifestDTOList);
+    List<LIMSSample> toSampleList(List<LABSampleDTO> sampleDTOList);
 
     LIMSManifestDTO toLimsManifestDto(ManifestDTO manifestDTO);
-    LIMSSampleDTO toLimsSampleDto(SampleDTO sampleDTO);
+    LIMSSampleDTO toLimsSampleDto(LABSampleDTO sampleDTO);
     ManifestDTO toManifestDto(LIMSManifestDTO limsManifestDTO);
-    SampleDTO toSampleDto(LIMSSampleDTO limsSampleDTO);
+    LABSampleDTO toSampleDto(LIMSSampleDTO limsSampleDTO);
 
-    ConfigDTO toConfigDto(Config config);
-    Config toConfig(ConfigDTO configDTO);
-    List<ConfigDTO> toConfigDtoList(List<Config> configList);
-    List<Config> toConfigList(List<ConfigDTO> configDTOList);
+    ConfigDTO toConfigDto(LIMSConfig config);
+    LIMSConfig toConfig(ConfigDTO configDTO);
+    List<ConfigDTO> toConfigDtoList(List<LIMSConfig> configList);
+    List<LIMSConfig> toConfigList(List<ConfigDTO> configDTOList);
 
-    Result toResult(LIMSResultDTO resultDTO);
+    LIMSResult toResult(LIMSResultDTO resultDTO);
 }

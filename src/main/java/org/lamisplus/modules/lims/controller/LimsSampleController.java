@@ -2,7 +2,7 @@ package org.lamisplus.modules.lims.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.lamisplus.modules.lims.domain.dto.SampleDTO;
+import org.lamisplus.modules.lims.domain.dto.LABSampleDTO;
 import org.lamisplus.modules.lims.service.LimsSampleService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +16,12 @@ public class LimsSampleController {
     private final LimsSampleService limsSampleService;
 
     @PostMapping("/manifest-samples")
-    public SampleDTO SaveManifest(@RequestBody SampleDTO manifestDTO){
+    public LABSampleDTO SaveManifest(@RequestBody LABSampleDTO manifestDTO){
         return limsSampleService.Save(manifestDTO);
     }
 
     @PutMapping("/manifest-samples")
-    public SampleDTO UpdateManifest(@RequestBody SampleDTO manifestDTO){
+    public LABSampleDTO UpdateManifest(@RequestBody LABSampleDTO manifestDTO){
         return limsSampleService.Update(manifestDTO);
     }
 
@@ -31,17 +31,17 @@ public class LimsSampleController {
     }
 
     @GetMapping("/manifest-samples/{id}")
-    public SampleDTO GetAllLabOrders(@PathVariable int id){
+    public LABSampleDTO GetAllLabOrders(@PathVariable int id){
         return limsSampleService.findById(id);
     }
 
     @GetMapping("/manifest-samples/manifests/{id}")
-    public List<SampleDTO> GetSamplesByManifestId(@PathVariable int id) {
+    public List<LABSampleDTO> GetSamplesByManifestId(@PathVariable int id) {
         return limsSampleService.findbyManifestRecordId(id);
     }
 
     @GetMapping("/collected-samples/")
-    public List<SampleDTO> GetAllCollectedSamples() {
+    public List<LABSampleDTO> GetAllCollectedSamples() {
         return limsSampleService.getAllPendingSamples();
     }
 }

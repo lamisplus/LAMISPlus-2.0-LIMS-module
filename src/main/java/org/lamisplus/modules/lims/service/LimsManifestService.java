@@ -9,9 +9,9 @@ import org.lamisplus.modules.base.domain.entities.User;
 import org.lamisplus.modules.base.service.OrganisationUnitService;
 import org.lamisplus.modules.base.service.UserService;
 import org.lamisplus.modules.lims.domain.dto.*;
-import org.lamisplus.modules.lims.domain.entity.Config;
-import org.lamisplus.modules.lims.domain.entity.Manifest;
-import org.lamisplus.modules.lims.domain.entity.Sample;
+import org.lamisplus.modules.lims.domain.entity.LIMSConfig;
+import org.lamisplus.modules.lims.domain.entity.LIMSManifest;
+import org.lamisplus.modules.lims.domain.entity.LIMSSample;
 import org.lamisplus.modules.lims.domain.mapper.LimsMapper;
 import org.lamisplus.modules.lims.repository.*;
 import org.springframework.http.*;
@@ -37,20 +37,20 @@ public class LimsManifestService {
     private final LimsResultService resultService;
     private final LimsConfigRepository limsConfigRepository;
 
-    String FacilityDATIMCode = "FH7LMnbnVlT";
+    String FacilityDATIMCode = "meYf9FxUI4c";
     String FacilityMFLCode = "543";
     String loginUrl = "/login.php";
     String manifestUrl = "/samples/create.php";
     String resultsUrl = "/samples/result.php";
 
     public ManifestDTO Save(ManifestDTO manifestDTO){
-        Manifest manifest = limsMapper.tomManifest(manifestDTO);
+        LIMSManifest manifest = limsMapper.tomManifest(manifestDTO);
 
         if(manifest.getId()==0) {
             //TODO: pick the active facility
             Long FacilityId = getCurrentUserOrganization();
             OrganisationUnit organisationUnit = organisationUnitService.getOrganizationUnit(FacilityId);
-            String FacilityName = organisationUnit.getName();
+            String FacilityName = "National Hospital - Abuja"; //organisationUnit.getName();
 
             manifest.setManifestID(GenerateManifestID(FacilityMFLCode));
             manifest.setSendingFacilityID(FacilityDATIMCode);
@@ -59,7 +59,7 @@ public class LimsManifestService {
             manifest.setCreateDate(LocalDateTime.now());
             manifest.setUuid(UUID.randomUUID().toString());
 
-            for(Sample sample: manifest.getSampleInformation()){
+            for(LIMSSample sample: manifest.getSampleInformation()){
                 sample.setUuid(UUID.randomUUID().toString());
             }
         }
@@ -72,7 +72,7 @@ public class LimsManifestService {
     }
 
     public String Delete(Integer id){
-        Manifest manifest = limsManifestRepository.findById(id).orElse(null);
+        LIMSManifest manifest = limsManifestRepository.findById(id).orElse(null);
         limsManifestRepository.delete(manifest);
         return id + " deleted successfully";
     }
@@ -103,7 +103,7 @@ public class LimsManifestService {
     public LIMSManifestResponseDTO PostManifestToServer(int id, int configId) {
         RestTemplate restTemplate = GetRestTemplate();
         HttpHeaders headers = GetHTTPHeaders();
-        Config config = limsConfigRepository.findById(configId).orElse(null);
+        LIMSConfig config = limsConfigRepository.findById(configId).orElse(null);
         LogInfo("CONFIG", config);
 
         //Login to LIMS
@@ -134,7 +134,7 @@ public class LimsManifestService {
         return restTemplate;
     }
 
-    private LIMSLoginResponseDTO LoginToLIMS(RestTemplate restTemplate, HttpHeaders headers, Config config){
+    private LIMSLoginResponseDTO LoginToLIMS(RestTemplate restTemplate, HttpHeaders headers, LIMSConfig config){
         LIMSLoginRequestDTO loginRequestDTO = new LIMSLoginRequestDTO();
         loginRequestDTO.setEmail(config.getConfigEmail());
         loginRequestDTO.setPassword(config.getConfigPassword());
@@ -154,7 +154,7 @@ public class LimsManifestService {
         return headers;
     }
 
-    private LIMSManifestResponseDTO PostManifestRequest(RestTemplate restTemplate, HttpHeaders headers, LIMSLoginResponseDTO loginResponseDTO, int ManifestId, Config config) {
+    private LIMSManifestResponseDTO PostManifestRequest(RestTemplate restTemplate, HttpHeaders headers, LIMSLoginResponseDTO loginResponseDTO, int ManifestId, LIMSConfig config) {
         LIMSManifestDTO manifest = limsMapper.toLimsManifestDto(findById(ManifestId));
         LIMSManifestRequestDTO requestDTO = new LIMSManifestRequestDTO();
         assert loginResponseDTO != null;
@@ -169,7 +169,7 @@ public class LimsManifestService {
         return manifestResponse.getBody();
     }
 
-    private LIMSResultsResponseDTO GetResultsRequest(RestTemplate restTemplate, HttpHeaders headers, LIMSLoginResponseDTO loginResponseDTO, int ManifestId, Config config){
+    private LIMSResultsResponseDTO GetResultsRequest(RestTemplate restTemplate, HttpHeaders headers, LIMSLoginResponseDTO loginResponseDTO, int ManifestId, LIMSConfig config){
         LIMSManifestDTO manifest = limsMapper.toLimsManifestDto(findById(ManifestId));
         LIMSResultsRequestDTO requestDTO = new LIMSResultsRequestDTO();
 
@@ -192,7 +192,7 @@ public class LimsManifestService {
     public LIMSResultsResponseDTO DownloadResultsFromLIMS(int id, int configId) {
         RestTemplate restTemplate = GetRestTemplate();
         HttpHeaders headers = GetHTTPHeaders();
-        Config config = limsConfigRepository.findById(configId).orElse(null);
+        LIMSConfig config = limsConfigRepository.findById(configId).orElse(null);
 
         //Login to LIMS
         assert config != null;

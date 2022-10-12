@@ -3,10 +3,8 @@ package org.lamisplus.modules.lims.domain.dto;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class SampleDTO {
+public class LABSampleDTO {
     private int id;
     private String uuid;
     private int pid;

@@ -3,7 +3,7 @@ package org.lamisplus.modules.lims.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.lamisplus.modules.lims.domain.dto.ConfigDTO;
-import org.lamisplus.modules.lims.domain.entity.Config;
+import org.lamisplus.modules.lims.domain.entity.LIMSConfig;
 import org.lamisplus.modules.lims.domain.mapper.LimsMapper;
 import org.lamisplus.modules.lims.repository.LimsConfigRepository;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class LimsConfigService {
     private final LimsMapper limsMapper;
 
     public ConfigDTO Save(ConfigDTO configDTO){
-        Config config = limsMapper.toConfig(configDTO);
+        LIMSConfig config = limsMapper.toConfig(configDTO);
         config.setUuid(UUID.randomUUID().toString());
         config.setCreateDate(LocalDateTime.now());
         return limsMapper.toConfigDto(limsConfigRepository.save(config));
